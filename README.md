@@ -6,7 +6,7 @@
 
 Welcome to the SEED CTF platform!  This platform is intended to be used as a companion to the SEED Labs security education exercises hosted at [https://seedsecuritylabs.org/](https://seedsecuritylabs.org/). The platform contains CTF challenges corresponding to many of the Labs in addition to a few not associated with a specific Lab.
 
-Please see the `manual/README` document for instructions on how to set up and use the platform.
+Please see the [`manual/README`](./manual/README.md) document for instructions on how to set up and use the platform.
 
 ## SEED Labs Covered
 
@@ -57,4 +57,3 @@ Please contact [Dylan Simmons](mailto:dylan.simmons@wustl.edu) or [Steve Cole](m
 * Questions
 * Comments
 * Suggestions
-
