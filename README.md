@@ -6,7 +6,7 @@
 
 Welcome to the SEED CTF platform!  This platform is intended to be used as a companion to the SEED Labs security education exercises hosted at [https://seedsecuritylabs.org/](https://seedsecuritylabs.org/). The platform contains CTF challenges corresponding to many of the Labs in addition to a few not associated with a specific Lab.
 
-Please see the `manual/README` document for instructions on how to set up and use the platform.
+Please see the [`manual/README`](./manual/README.md) document for instructions on how to set up and use the platform.
 
 ## SEED Labs Covered
 
@@ -41,7 +41,7 @@ The mapping from SEED Labs to corresponding CTF challenges is as follows:
 
 We'd love to hear your feedback and work together on this project!
 * If you're using this platform in your class, please send us an e-mail --  we'd love to know how and where the platform is being used.
-* To report a bug, raise an issue, or discuss the contents of the repository, feel free to create an "Issue" or "Discussion" in this repository on GitHub.
+* To report a bug, raise an issue, or discuss the contents of the repository, feel free to [create an issue](https://github.com/cole-wustl/seed-labs-ctf/issues/new/choose) or [start a discussion](https://github.com/cole-wustl/seed-labs-ctf/discussions/new) in this repository on GitHub.
 * If you'd like to fix a bug or generate a new challenge, you may fork this repo and initiate pull requests against it.
 * If you'd like to discuss the project and how you might use it in our class, please feel free to contact us directly via e-mail and we'd be happy to talk more about that.
 
