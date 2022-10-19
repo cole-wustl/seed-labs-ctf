@@ -17,7 +17,7 @@
 #endif
 
 #ifndef PORT
-#define PORT 8888
+#define PORT 49575 
 #endif
 
 #ifndef PRINT_ERRORS
@@ -75,7 +75,7 @@ void socketInteract(int sock)
       }
       else if (ready > 0)
       {
-         if (fds.revents & POLLIN)
+         if (fds.revents & POLLIN) // New data to read
          {
             char buf[2048];
             ssize_t bytes = 0;
@@ -90,11 +90,10 @@ void socketInteract(int sock)
             }
             else if (bytes > 0)
             {
-               printf("%s\n", buf);
+               printf("%s", buf);
             }
          }
-
-         if (fds.revents & POLLOUT)
+         else if (fds.revents & POLLOUT) // Able to write
          {
             char buf[2048];
             ssize_t bytes = 0;
@@ -114,6 +113,10 @@ void socketInteract(int sock)
 #if PRINT_ERRORS
                perror("WRITE FAILED");
 #endif
+               return;
+            }
+            if (strcmp(buf, "exit\n") == 0)
+            {
                return;
             }
          }
