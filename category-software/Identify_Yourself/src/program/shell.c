@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <poll.h>
+#include <ctype.h>
 
 #ifndef USER
 #define USER "user"
@@ -55,70 +56,162 @@ void validateCredentials()
    }
 }
 
-void socketInteract(int sock)
+int socketRead(int sock, char* outBuf, int bufSize)
 {
+   if (sock < 0 || outBuf == NULL || bufSize < 1)
+   {
+      return -1;
+   }
+   
    const int timeout = 100; // milliseconds
-   int ready;
+   int ret = 0;
    struct pollfd fds;
    fds.fd = sock;
-   fds.events = POLLIN | POLLOUT; // Data to read; writing is possible
-
-   while (true)
+   fds.events = POLLIN;
+   
+   int ready = poll(&fds, 1, timeout);
+   if (ready == -1)
    {
-      ready = poll(&fds, 1, timeout);
-      if (ready == -1)
+      #if PRINT_ERRORS
+      perror("POLL FAILED");
+      #endif
+   }
+   else if (ready && (fds.revents & POLLIN))
+   {
+      char tmpBuf[bufSize];
+      ssize_t Bytes = read(sock, tmpBuf, sizeof(tmpBuf));
+      if (Bytes < 0)
       {
-#if PRINT_ERRORS
-         perror("POLL FAILED");
-#endif
-         return;
+         #if PRINT_ERRORS
+         perror("READ FAILED");
+         #endif
       }
-      else if (ready > 0)
+      else if (Bytes > 0)
       {
-         if (fds.revents & POLLIN) // New data to read
+         memcpy(outBuf, tmpBuf, Bytes < bufSize ? Bytes : bufSize);
+         ret = Bytes;
+      }
+   }
+
+   return ret;
+}
+
+int socketWrite(int sock, char* inBuf, int bufSize)
+{
+   if (sock < 0 || inBuf == NULL || bufSize < 1)
+   {
+      return -1;
+   }
+   
+   const int timeout = 100; // milliseconds
+   int ret = 0;
+   struct pollfd fds;
+   fds.fd = sock;
+   fds.events = POLLOUT;
+   
+   int ready = poll(&fds, 1, timeout);
+   if (ready == -1)
+   {
+      #if PRINT_ERRORS
+      perror("POLL FAILED");
+      #endif
+   }
+   else if (ready && (fds.revents & POLLOUT))
+   {
+      ssize_t Bytes = write(sock, inBuf, bufSize);
+      if (Bytes == -1)
+      {
+         #if PRINT_ERRORS
+         perror("WRITE FAILED");
+         #endif
+      }
+      else if (Bytes > 0)
+      {
+         ret = Bytes;
+      }
+   }
+
+   return ret;
+}
+
+bool socketPeerClosed(int sock)
+{
+   if (sock < 0)
+   {
+      return true;
+   }
+   
+   const int timeout = 100; // milliseconds
+   int ret = 0;
+   struct pollfd fds;
+   fds.fd = sock;
+   fds.events = POLLHUP;
+   
+   int ready = poll(&fds, 1, timeout);
+   if (ready == -1)
+   {
+      #if PRINT_ERRORS
+      perror("POLL FAILED");
+      #endif
+   }
+   else if (ready && (fds.revents & POLLHUP))
+   {
+      return true;
+   }
+
+   return false;
+}
+
+bool isEmptyString(char* str, int len)
+{
+   // Return true if str consists of only ' ' and '\n', false otherwise.
+   if (str == NULL || len < 1)
+   {
+      return true;
+   }
+   
+   for (int i = 0; i < len; i++)
+   {
+      if (isspace(str[i]) || str[i] == '\n')
+      {
+         continue;
+      }
+      else
+      {
+         return false;
+      }
+   }
+   return true;
+}
+
+void socketInteract(int sock)
+{
+   char buf[5000];
+   bool read = false;
+
+   while (!socketPeerClosed(sock))
+   {
+      memset(buf, 0, sizeof(buf));
+
+      if (read)
+      {
+         if (socketRead(sock, buf, sizeof(buf)) > 0)
          {
-            char buf[2048];
-            ssize_t bytes = 0;
-            memset(buf, 0, sizeof(buf));
-            bytes = read(fds.fd, buf, sizeof(buf));
-            if (bytes == -1)
-            {
-#if PRINT_ERRORS
-               perror("READ FAILED");
-#endif
-               return;
-            }
-            else if (bytes > 0)
-            {
-               printf("%s", buf);
-            }
+            fputs(buf, stdout);
          }
-         else if (fds.revents & POLLOUT) // Able to write
+         read = false;
+      }
+      else
+      {
+         fgets(buf, sizeof(buf), stdin);
+         if (strcmp(buf, "exit\n") == 0)
          {
-            char buf[2048];
-            ssize_t bytes = 0;
-            char* ret = NULL;
-            memset(buf, 0, sizeof(buf));
-            ret = fgets(buf, sizeof(buf), stdin);
-            if (ret == NULL)
-            {
-#if PRINT_ERRORS
-               perror("FGETS FAILED");
-#endif
-               return;
-            }
-            bytes = write(fds.fd, buf, sizeof(buf));
-            if (bytes == -1)
-            {
-#if PRINT_ERRORS
-               perror("WRITE FAILED");
-#endif
-               return;
-            }
-            if (strcmp(buf, "exit\n") == 0)
-            {
-               return;
-            }
+            return;
+         }
+         //else if (!isEmptyString(buf, strlen(buf)))
+         {
+            socketWrite(sock, buf, strnlen(buf, sizeof(buf)));
+            read = true;
          }
       }
    }
@@ -141,26 +234,26 @@ int main(int argc, char* argv[])
 
    if (inet_aton(argv[1], &serverAddress.sin_addr) == 0)
    {
-#if PRINT_ERRORS
+      #if PRINT_ERRORS
       printf("INVALID ADDRESS!\n");
-#endif
+      #endif
       return 1;
    }
 
    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
    if (sockfd == -1)
    {
-#if PRINT_ERRORS
+      #if PRINT_ERRORS
       perror("SOCKET CREATION FAILED");
-#endif
+      #endif
       return 1;
    }
 
    if (connect(sockfd, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1)
    {
-#if PRINT_ERRORS
+      #if PRINT_ERRORS
      perror("SOCKET CONNECTION FAILED");
-#endif
+      #endif
       return 1;
    }
 
@@ -168,9 +261,9 @@ int main(int argc, char* argv[])
 
    if (close(sockfd) == -1)
    {
-#if PRINT_ERRORS
+      #if PRINT_ERRORS
       perror("SOCKET CLOSING FAILED");
-#endif
+      #endif
       return 1;
    }
 
