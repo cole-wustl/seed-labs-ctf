@@ -58,38 +58,43 @@ void validateCredentials()
 
 int socketRead(int sock, char* outBuf, int bufSize)
 {
+   int ret = 0;
+   
    if (sock < 0 || outBuf == NULL || bufSize < 1)
    {
-      return -1;
+      ret = -1;
    }
-   
-   const int timeout = 100; // milliseconds
-   int ret = 0;
-   struct pollfd fds;
-   fds.fd = sock;
-   fds.events = POLLIN;
-   
-   int ready = poll(&fds, 1, timeout);
-   if (ready == -1)
+   else
    {
-      #if PRINT_ERRORS
-      perror("POLL FAILED");
-      #endif
-   }
-   else if (ready && (fds.revents & POLLIN))
-   {
-      char tmpBuf[bufSize];
-      ssize_t Bytes = read(sock, tmpBuf, sizeof(tmpBuf));
-      if (Bytes < 0)
+      const int timeout = 100; // milliseconds
+      struct pollfd fds;
+      fds.fd = sock;
+      fds.events = POLLIN;
+      
+      int ready = poll(&fds, 1, timeout);
+      if (ready < 0)
       {
          #if PRINT_ERRORS
-         perror("READ FAILED");
+         perror("POLL FAILED");
          #endif
+         ret = -1;
       }
-      else if (Bytes > 0)
+      else if (ready && (fds.revents & POLLIN))
       {
-         memcpy(outBuf, tmpBuf, Bytes < bufSize ? Bytes : bufSize);
-         ret = Bytes;
+         char tmpBuf[bufSize];
+         ssize_t Bytes = read(sock, tmpBuf, sizeof(tmpBuf));
+         if (Bytes < 0)
+         {
+            #if PRINT_ERRORS
+            perror("READ FAILED");
+            #endif
+            ret = -1;
+         }
+         else if (Bytes > 0)
+         {
+            memcpy(outBuf, tmpBuf, (Bytes < bufSize ? Bytes : bufSize));
+            ret = Bytes;
+         }
       }
    }
 
@@ -98,87 +103,96 @@ int socketRead(int sock, char* outBuf, int bufSize)
 
 int socketWrite(int sock, char* inBuf, int bufSize)
 {
+   int ret = 0;
+   
    if (sock < 0 || inBuf == NULL || bufSize < 1)
    {
-      return -1;
+      ret = -1;
    }
-   
-   const int timeout = 100; // milliseconds
-   int ret = 0;
-   struct pollfd fds;
-   fds.fd = sock;
-   fds.events = POLLOUT;
-   
-   int ready = poll(&fds, 1, timeout);
-   if (ready == -1)
+   else
    {
-      #if PRINT_ERRORS
-      perror("POLL FAILED");
-      #endif
-   }
-   else if (ready && (fds.revents & POLLOUT))
-   {
-      ssize_t Bytes = write(sock, inBuf, bufSize);
-      if (Bytes == -1)
+      const int timeout = 100; // milliseconds
+      int ret = 0;
+      struct pollfd fds;
+      fds.fd = sock;
+      fds.events = POLLOUT;
+      
+      int ready = poll(&fds, 1, timeout);
+      if (ready < 0)
       {
          #if PRINT_ERRORS
-         perror("WRITE FAILED");
+         perror("POLL FAILED");
          #endif
+         ret = -1;
       }
-      else if (Bytes > 0)
+      else if (ready && (fds.revents & POLLOUT))
       {
-         ret = Bytes;
+         ssize_t Bytes = write(sock, inBuf, bufSize);
+         if (Bytes < 0)
+         {
+            #if PRINT_ERRORS
+            perror("WRITE FAILED");
+            #endif
+            ret = -1;
+         }
+         else
+         {
+            ret = Bytes;
+         }
       }
    }
 
    return ret;
 }
 
-bool socketPeerClosed(int sock)
+int socketPeerOpen(int sock)
 {
+   int ret = 1;
+
    if (sock < 0)
    {
-      return true;
+      ret = -1;
    }
-   
-   const int timeout = 100; // milliseconds
-   int ret = 0;
-   struct pollfd fds;
-   fds.fd = sock;
-   fds.events = POLLHUP;
-   
-   int ready = poll(&fds, 1, timeout);
-   if (ready == -1)
+   else
    {
-      #if PRINT_ERRORS
-      perror("POLL FAILED");
-      #endif
-   }
-   else if (ready && (fds.revents & POLLHUP))
-   {
-      return true;
+      const int timeout = 100; // milliseconds
+      int ret = 0;
+      struct pollfd fds;
+      fds.fd = sock;
+      fds.events = POLLHUP;
+      
+      int ready = poll(&fds, 1, timeout);
+      if (ready < 0)
+      {
+         #if PRINT_ERRORS
+         perror("POLL FAILED");
+         #endif
+         ret = -1;
+      }
+      else if (ready && (fds.revents & POLLHUP))
+      {
+         ret = 0;
+      }
    }
 
-   return false;
+   return ret;
 }
 
 bool isEmptyString(char* str, int len)
 {
    // Return true if str consists of only ' ' and '\n', false otherwise.
-   if (str == NULL || len < 1)
+   if (str != NULL && len > 0)
    {
-      return true;
-   }
-   
-   for (int i = 0; i < len; i++)
-   {
-      if (isspace(str[i]) || str[i] == '\n')
+      for (int i = 0; i < len; i++)
       {
-         continue;
-      }
-      else
-      {
-         return false;
+         if (isspace(str[i]) || str[i] == '\n')
+         {
+            continue;
+         }
+         else
+         {
+            return false;
+         }
       }
    }
    return true;
@@ -187,28 +201,34 @@ bool isEmptyString(char* str, int len)
 void socketInteract(int sock)
 {
    char buf[5000];
-   bool read = false;
+   bool read = true;
 
-   while (!socketPeerClosed(sock))
+   while (socketPeerOpen(sock) == 1)
    {
-      memset(buf, 0, sizeof(buf));
-
       if (read)
       {
-         if (socketRead(sock, buf, sizeof(buf)) > 0)
+         while (read)
          {
-            fputs(buf, stdout);
+            memset(buf, 0, sizeof(buf));
+            if (socketRead(sock, buf, sizeof(buf)) > 0)
+            {
+               fputs(buf, stdout);
+            }
+            else
+            {
+               read = false;
+            }
          }
-         read = false;
       }
       else
       {
+         memset(buf, 0, sizeof(buf));
          fgets(buf, sizeof(buf), stdin);
          if (strcmp(buf, "exit\n") == 0)
          {
             return;
          }
-         //else if (!isEmptyString(buf, strlen(buf)))
+         else if (!isEmptyString(buf, strlen(buf)))
          {
             socketWrite(sock, buf, strnlen(buf, sizeof(buf)));
             read = true;
