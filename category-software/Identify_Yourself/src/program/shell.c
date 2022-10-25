@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <poll.h>
 #include <ctype.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #ifndef USER
 #define USER "user"
@@ -25,6 +27,19 @@
 #define PRINT_ERRORS 1
 #endif
 
+static const char* _md5_hash = "$1$1a1dc91c907325c69271ddf0c944bc72";
+
+int verifyMD5Hash(const char* inKey)
+{
+   int ret = 0;
+   printf("inKey: >%s<\n", inKey);
+   if (strcmp(crypt(inKey, _md5_hash), _md5_hash) == 0)
+   {
+      ret = 1;
+   }
+   return ret;
+}
+
 void validateCredentials()
 {
    const unsigned int BUF_SIZE = 1024;
@@ -32,26 +47,38 @@ void validateCredentials()
    const char* _pass = PASS;
    
    char inUser[BUF_SIZE];
-   char inPass[BUF_SIZE];
+   char* inPass;
    bool validCredentials = false;
-   
+  
    while (!validCredentials)
    {
       memset(inUser, 0, sizeof(inUser));
-      memset(inPass, 0, sizeof(inPass));
       
       printf("Username: ");
       scanf("%s", inUser);
 
-      printf("Password: ");
-      scanf("%s", inPass);
-
-      validCredentials = (strcmp(_user, inUser) == 0 &&
-                          strcmp(_pass, inPass) == 0);
-      
-      if (!validCredentials)
+      inPass = getpass("Password: ");
+      if (inPass == NULL)
       {
-         printf("INVALID CREDENTIALS, TRY AGAIN...\n");
+         #if PRINT_ERRORS
+         perror("GETPASS FAILED");
+         #endif
+         continue;
+      }
+      else
+      {
+         #ifdef HARD
+         validCredentials = (strcmp(_user, inUser) == 0 &&
+                             verifyMD5Hash(inPass) == 1);
+         #else
+         validCredentials = (strcmp(_user, inUser) == 0 &&
+                             strcmp(_pass, inPass) == 0);
+         #endif
+         
+         if (!validCredentials)
+         {
+            printf("INVALID CREDENTIALS, TRY AGAIN...\n");
+         }
       }
    }
 }
