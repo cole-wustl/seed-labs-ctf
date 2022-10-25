@@ -33,6 +33,7 @@ int verifyMD5Hash(const char* inKey)
 {
    int ret = 0;
    printf("inKey: >%s<\n", inKey);
+   printf("crypt(inKey, _md5_hash): >%s<\n", crypt(inKey, _md5_hash));
    if (strcmp(crypt(inKey, _md5_hash), _md5_hash) == 0)
    {
       ret = 1;
