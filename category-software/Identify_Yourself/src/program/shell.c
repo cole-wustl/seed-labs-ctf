@@ -9,7 +9,7 @@
 #include <poll.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <crypt.h>
 
 #ifndef USER
 #define USER "user"
@@ -27,19 +27,14 @@
 #define PRINT_ERRORS 1
 #endif
 
-static const char* _md5_hash = "$1$1a1dc91c907325c69271ddf0c944bc72";
+#ifdef HARD
+static const char* _md5_hash = "$1$NFo4QwBt$ZuSK3X/.MrhrqyGDz3Fow."; // Generated using md5pass utility
 
 int verifyMD5Hash(const char* inKey)
 {
-   int ret = 0;
-   printf("inKey: >%s<\n", inKey);
-   printf("crypt(inKey, _md5_hash): >%s<\n", crypt(inKey, _md5_hash));
-   if (strcmp(crypt(inKey, _md5_hash), _md5_hash) == 0)
-   {
-      ret = 1;
-   }
-   return ret;
+   return strcmp(crypt(inKey, _md5_hash), _md5_hash) == 0;
 }
+#endif
 
 void validateCredentials()
 {
@@ -275,8 +270,6 @@ int main(int argc, char* argv[])
       return 1;
    }
 
-   validateCredentials();
-   
    serverAddress.sin_family = AF_INET;
    serverAddress.sin_port = htons(PORT);
 
@@ -296,6 +289,8 @@ int main(int argc, char* argv[])
       #endif
       return 1;
    }
+   
+   validateCredentials(); // Check credentials before connecting to remote host
 
    if (connect(sockfd, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1)
    {
