@@ -295,7 +295,7 @@ int main(int argc, char* argv[])
    if (connect(sockfd, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1)
    {
       #if PRINT_ERRORS
-     perror("SOCKET CONNECTION FAILED");
+      perror("SOCKET CONNECTION FAILED");
       #endif
       return 1;
    }
