@@ -10,13 +10,13 @@ RUN apt-get update && apt-get install -y ${PACKAGES} && rm -rf /var/lib/apt/list
 # Add new user account.
 RUN useradd --home-dir /home/seed --create-home --uid 1000 --shell /usr/bin/bash seed
 
-COPY xinetd.conf /etc/xinetd.conf
-COPY banner_success /ctf/banner_success
-COPY banner_fail /ctf/banner_fail
-COPY entry.sh /ctf/entry.sh
-COPY health.sh /ctf/health.sh
-COPY simpleShell.sh /ctf/simpleShell.sh
-COPY flag.txt /flag/flag.txt
+COPY banner_success /ctf/
+COPY banner_fail    /ctf/
+COPY entry.sh       /ctf/
+COPY health.sh      /ctf/
+COPY server.sh      /ctf/
+COPY xinetd.conf    /etc/
+COPY flag.txt       /flag/
 
 RUN chmod 0755 /ctf/*
 RUN chmod 0644 /flag/flag.txt

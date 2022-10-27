@@ -23,8 +23,8 @@
 #define PORT 49575 
 #endif
 
-#ifndef PRINT_ERRORS
-#define PRINT_ERRORS 1
+#ifndef DEBUG
+#define DEBUG 1
 #endif
 
 #ifdef HARD
@@ -56,7 +56,7 @@ void validateCredentials()
       inPass = getpass("Password: ");
       if (inPass == NULL)
       {
-         #if PRINT_ERRORS
+         #if DEBUG
          perror("GETPASS FAILED");
          #endif
          continue;
@@ -81,15 +81,9 @@ void validateCredentials()
 
 int socketRead(int sock, char* outBuf, int bufSize)
 {
-   int ret = 0;
-   
-   if (sock < 0 || outBuf == NULL || bufSize < 1)
+   if (sock > 0 && outBuf != NULL && bufSize > 0)
    {
-      ret = -1;
-   }
-   else
-   {
-      const int timeout = 100; // milliseconds
+      const int timeout = 10; // milliseconds
       struct pollfd fds;
       fds.fd = sock;
       fds.events = POLLIN;
@@ -97,45 +91,36 @@ int socketRead(int sock, char* outBuf, int bufSize)
       int ready = poll(&fds, 1, timeout);
       if (ready < 0)
       {
-         #if PRINT_ERRORS
+         #if DEBUG
          perror("POLL FAILED");
          #endif
-         ret = -1;
       }
       else if (ready && (fds.revents & POLLIN))
       {
          char tmpBuf[bufSize];
-         ssize_t Bytes = read(sock, tmpBuf, sizeof(tmpBuf));
+         memset(tmpBuf, 0, bufSize);
+         ssize_t Bytes = recv(sock, tmpBuf, bufSize, 0);
          if (Bytes < 0)
          {
-            #if PRINT_ERRORS
-            perror("READ FAILED");
+            #if DEBUG
+            perror("RECV FAILED");
             #endif
-            ret = -1;
          }
-         else if (Bytes > 0)
+         else
          {
-            memcpy(outBuf, tmpBuf, (Bytes < bufSize ? Bytes : bufSize));
-            ret = Bytes;
+            memcpy(outBuf, tmpBuf, bufSize);
+            return Bytes;
          }
       }
    }
-
-   return ret;
+   return 0;
 }
 
 int socketWrite(int sock, char* inBuf, int bufSize)
 {
-   int ret = 0;
-   
-   if (sock < 0 || inBuf == NULL || bufSize < 1)
+   if (sock > 0 && inBuf != NULL && bufSize > 0)
    {
-      ret = -1;
-   }
-   else
-   {
-      const int timeout = 100; // milliseconds
-      int ret = 0;
+      const int timeout = 10; // milliseconds
       struct pollfd fds;
       fds.fd = sock;
       fds.events = POLLOUT;
@@ -143,126 +128,64 @@ int socketWrite(int sock, char* inBuf, int bufSize)
       int ready = poll(&fds, 1, timeout);
       if (ready < 0)
       {
-         #if PRINT_ERRORS
+         #if DEBUG
          perror("POLL FAILED");
          #endif
-         ret = -1;
       }
       else if (ready && (fds.revents & POLLOUT))
       {
-         ssize_t Bytes = write(sock, inBuf, bufSize);
+         ssize_t Bytes = send(sock, inBuf, bufSize, 0);
          if (Bytes < 0)
          {
-            #if PRINT_ERRORS
-            perror("WRITE FAILED");
+            #if DEBUG
+            perror("SEND FAILED");
             #endif
-            ret = -1;
          }
          else
          {
-            ret = Bytes;
+            return Bytes;
          }
       }
    }
-
-   return ret;
+   return 0;
 }
 
 int socketPeerOpen(int sock)
 {
-   int ret = 1;
-
-   if (sock < 0)
+   if (sock > 0)
    {
-      ret = -1;
-   }
-   else
-   {
-      const int timeout = 100; // milliseconds
-      int ret = 0;
-      struct pollfd fds;
-      fds.fd = sock;
-      fds.events = POLLHUP;
-      
-      int ready = poll(&fds, 1, timeout);
-      if (ready < 0)
+      char buf[1];
+      if (recv(sock, buf, 1, MSG_PEEK) > 0)
       {
-         #if PRINT_ERRORS
-         perror("POLL FAILED");
-         #endif
-         ret = -1;
-      }
-      else if (ready && (fds.revents & POLLHUP))
-      {
-         ret = 0;
-      }
+         return 1;
+      } 
    }
-
-   return ret;
-}
-
-bool isEmptyString(char* str, int len)
-{
-   // Return true if str consists of only ' ' and '\n', false otherwise.
-   if (str != NULL && len > 0)
-   {
-      for (int i = 0; i < len; i++)
-      {
-         if (isspace(str[i]) || str[i] == '\n')
-         {
-            continue;
-         }
-         else
-         {
-            return false;
-         }
-      }
-   }
-   return true;
+   return 0;
 }
 
 void socketInteract(int sock)
 {
-   char buf[5000];
+   const int bufSize = 5000;
+   char buf[bufSize];
    bool read = true;
 
-   while (socketPeerOpen(sock) == 1)
+   while (socketPeerOpen(sock))
    {
-      if (read)
+      while (socketRead(sock, buf, bufSize) > 0)
       {
-         while (read)
-         {
-            memset(buf, 0, sizeof(buf));
-            if (socketRead(sock, buf, sizeof(buf)) > 0)
-            {
-               fputs(buf, stdout);
-            }
-            else
-            {
-               read = false;
-            }
-         }
-      }
-      else
-      {
-         memset(buf, 0, sizeof(buf));
-         fgets(buf, sizeof(buf), stdin);
-         if (strcmp(buf, "exit\n") == 0)
-         {
-            return;
-         }
-         else if (!isEmptyString(buf, strlen(buf)))
-         {
-            socketWrite(sock, buf, strnlen(buf, sizeof(buf)));
-            read = true;
-         }
-      }
+         fputs(buf, stdout);
+      }  
+      
+      memset(buf, 0, bufSize);
+      fgets(buf, bufSize, stdin);
+      socketWrite(sock, buf, strlen(buf));
    }
 }
 
 int main(int argc, char* argv[])
 {
    struct sockaddr_in serverAddress;
+   int sockfd;
    
    if (argc != 2)
    {
@@ -275,16 +198,16 @@ int main(int argc, char* argv[])
 
    if (inet_aton(argv[1], &serverAddress.sin_addr) == 0)
    {
-      #if PRINT_ERRORS
+      #if DEBUG
       printf("INVALID ADDRESS!\n");
       #endif
       return 1;
    }
 
-   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-   if (sockfd == -1)
+   sockfd = socket(AF_INET, SOCK_STREAM, 0);
+   if (sockfd < 0)
    {
-      #if PRINT_ERRORS
+      #if DEBUG
       perror("SOCKET CREATION FAILED");
       #endif
       return 1;
@@ -292,19 +215,17 @@ int main(int argc, char* argv[])
    
    validateCredentials(); // Check credentials before connecting to remote host
 
-   if (connect(sockfd, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1)
+   if (connect(sockfd, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0)
    {
-      #if PRINT_ERRORS
       perror("SOCKET CONNECTION FAILED");
-      #endif
       return 1;
    }
 
    socketInteract(sockfd);
 
-   if (close(sockfd) == -1)
+   if (close(sockfd) < 0)
    {
-      #if PRINT_ERRORS
+      #if DEBUG
       perror("SOCKET CLOSING FAILED");
       #endif
       return 1;

@@ -5,13 +5,19 @@ printHelp() {
    echo "Usage: dockerHelper.sh <OPTION>"
    echo "Manage the Docker app for the Identify Yourself CTF."
    echo "If any of the Docker commands fail you may need to run with root priviliges."
+   echo "Options can be combined and will be executed in the order supplied."
    echo
    echo "Options:"
-   echo "   -b   build the Docker image"
-   echo "   -h   show this help dialogue"
-   echo "   -k   stop the Docker app"
-   echo "   -r   run the Docker app"
-   echo "   -s   print the status of the Docker app"
+   echo "   -b   Build the Docker image."
+   echo "   -h   Show this help dialogue."
+   echo "   -k   Stop the Docker app."
+   echo "   -r   Run the Docker app."
+   echo "   -s   Print the status of the Docker app."
+   echo
+   echo "Examples:"
+   echo "   ./dockerHelper.sh -k     Stop the Docker app."
+   echo "   ./dockerHelper.sh -rs    Start the Docker app, then print the status."
+   echo "   ./dockerHelper.sh -kbr   Stop the Docker app, then build it, then start it again."
    echo
 }
 
