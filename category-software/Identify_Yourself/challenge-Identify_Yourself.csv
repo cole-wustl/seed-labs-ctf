@@ -1,0 +1,2 @@
+name,description,category,value,type,state,max_attempts,flags,tags,hints,type_data
+"Identify Yourself","You should be cautions when running executables you're unsure of. This one should be okay, as long as you identify yourself.","Reverse Engineering",10,standard,hidden,0,"CHANGE_ME",,,
