@@ -11,36 +11,22 @@
 #include <stdlib.h>
 #include <crypt.h>
 
-#ifndef USER
-#define USER "user"
-#endif
-
-#ifndef PASS
-#define PASS "pass"
-#endif
-
-#ifndef PORT
+#define USERNAME "SEED_Security_Student"
+#define PASSWORD "rvrs3Eng1neeR"
 #define PORT 49575 
-#endif
-
-#ifndef DEBUG
-#define DEBUG 1
-#endif
 
 #ifdef HARD
-static const char* _md5_hash = "$1$NFo4QwBt$ZuSK3X/.MrhrqyGDz3Fow."; // Generated using md5pass utility
-
-int verifyMD5Hash(const char* inKey)
+// MD5 hash generated using md5pass utility
+#define MD5HASH "$1$tU01.NZp$vkL.aRuu6fU2ZLRU5esy0/"
+int verifyMD5Hash(const char* pass)
 {
-   return strcmp(crypt(inKey, _md5_hash), _md5_hash) == 0;
+   return strcmp(crypt(pass, MD5HASH), MD5HASH) == 0;
 }
 #endif
 
 void validateCredentials()
 {
-   const unsigned int BUF_SIZE = 1024;
-   const char* _user = USER;
-   const char* _pass = PASS;
+   const unsigned int BUF_SIZE = 1000;
    
    char inUser[BUF_SIZE];
    char* inPass;
@@ -51,7 +37,8 @@ void validateCredentials()
       memset(inUser, 0, sizeof(inUser));
       
       printf("Username: ");
-      scanf("%s", inUser);
+      fgets(inUser, BUF_SIZE, stdin);
+      inUser[strlen(inUser) - 1] = '\0'; // Remove newline character
 
       inPass = getpass("Password: ");
       if (inPass == NULL)
@@ -64,11 +51,11 @@ void validateCredentials()
       else
       {
          #ifdef HARD
-         validCredentials = (strcmp(_user, inUser) == 0 &&
+         validCredentials = (strcmp(USERNAME, inUser) == 0 &&
                              verifyMD5Hash(inPass) == 1);
          #else
-         validCredentials = (strcmp(_user, inUser) == 0 &&
-                             strcmp(_pass, inPass) == 0);
+         validCredentials = (strcmp(USERNAME, inUser) == 0 &&
+                             strcmp(PASSWORD, inPass) == 0);
          #endif
          
          if (!validCredentials)
@@ -167,7 +154,6 @@ void socketInteract(int sock)
 {
    const int bufSize = 5000;
    char buf[bufSize];
-   bool read = true;
 
    while (socketPeerOpen(sock))
    {
