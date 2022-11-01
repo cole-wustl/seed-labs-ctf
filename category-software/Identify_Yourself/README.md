@@ -27,14 +27,14 @@ There are no restrictions on what `flag.txt` may contain.
 
 There is a supplied Bash script, [`dockerHelper.sh`](./dockerHelper.sh), that will assist with managing the Docker container for this CTF.
 Running `dockerHelper.sh` without any parameters or passing it the `-h` parameter will print a help dialogue for the script.
-You may need to run `dockerHelper.sh` with root priviliges if any of the Docker commands executed by the script fail.
+You may need to run `dockerHelper.sh` with root privileges if any of the Docker commands executed by the script fail.
 The following is a summary of the available functions supplied by the script:
 
 | Function                    | Command                         |
 | --------------------------- | ------------------------------- |
 | Build the Docker Image      | `$ [sudo] ./dockerHelper.sh -b` |
 | Start the Docker App        | `$ [sudo] ./dockerHelper.sh -r` |
-| Check the Docker App Status | `$ [sudo] ./dockerHelper.sh -s' |
+| Check the Docker App Status | `$ [sudo] ./dockerHelper.sh -s` |
 | Stop the Docker App         | `$ [sudo] ./dockerHelper.sh -k` |
 
 Commands can be concatenated in one call to the script, and the function will be executed in the order in which the argument flag appears:
