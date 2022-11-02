@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+   server:
+      build:
+         context: ./src/server
+      container_name: ctf_server
+      tty: true
+      ports:
+         - "49575:49575"
+      restart: on-failure
+
