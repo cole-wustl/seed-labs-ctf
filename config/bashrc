@@ -1,0 +1,3 @@
+#!/usr/bin/bash
+
+export SEED_CTF_ROOT_DIR=$(pwd -P | sed 's/seed-labs-ctf.*/seed-labs-ctf/') # Remove anything after 'seed-labs-ctf' in current working directory
