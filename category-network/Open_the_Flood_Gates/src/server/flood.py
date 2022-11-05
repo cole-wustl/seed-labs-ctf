@@ -27,8 +27,8 @@ def sendICMPEcho():
 
 def sendDNSRequest():
    ip = IP(src = srcIPAddr, dst = dstIPAddr)
-   udp = UDP(sport = random.randint(10000, 60000), dport = 53)
-   dns = DNS(qd = DNSQR(qname="seedsecuritylabs.org", qtype = "A"))
+   udp = fuzz(UDP(dport = 53))
+   dns = fuzz(DNS(qd = DNSQR(qname="seedsecuritylabs.org", qtype = "A")))
    packet = ip/udp/dns
    send(packet)
    global packetsSent
@@ -36,9 +36,12 @@ def sendDNSRequest():
 
 def sendHTTPResponse():
    ip = IP(src = srcIPAddr, dst = dstIPAddr)
-   udp = UDP(sport = random.randint(10000, 60000), dport = random.randint(10000, 60000))
-   http = HTTP()/HTTPResponse()
-   packet = ip/udp/http
+   #udp = UDP()
+   #http = HTTP()/HTTPResponse()
+   tcp = TCP()
+   http = "HTTP/1.1 200 OK \n THIS IS A TEST"
+   #packet = ip/udp/http
+   packet = ip/tcp/http
    send(packet)
    global packetsSent
    packetsSent += 1
