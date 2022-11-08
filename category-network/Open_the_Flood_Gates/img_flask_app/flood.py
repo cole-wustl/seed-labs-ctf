@@ -5,22 +5,20 @@ import time
 import random
 from scapy.all import *
 from scapy.layers.http import *
+import os
 
 MAX_SECONDS_TO_RUN  = 60 # 1 minute
 MAX_PACKETS_TO_SEND = 5000
 
 packetsSent = 0
 
-if len(sys.argv) != 2:
-   exit("Specify dest IP addr")
-
-dstIPAddr = sys.argv[1]
+dstIPAddr = os.environ['REMOTE_HOST']
 srcIPAddr = socket.gethostbyname(socket.gethostname())
 
 def sendICMPEcho():
    ip = IP(src = srcIPAddr, dst = dstIPAddr)
    icmp = ICMP()
-   packet = ip/icmp
+   packet = ip/icmp/"THIS IS FROM flood.py"
    send(packet)
    global packetsSent
    packetsSent += 1

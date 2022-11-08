@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+   flask_web_app:
+      build:
+         context: ./img_flask_app
+      container_name: ctf_app
+      restart: on-failure
+      ports:
+         - 80:5000

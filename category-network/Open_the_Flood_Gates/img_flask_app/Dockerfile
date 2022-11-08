@@ -1,0 +1,21 @@
+FROM python:3-alpine
+
+LABEL Author="Dylan Simmons <dylan.simmons@wustl.edu>"
+
+COPY requirements.txt /ctf/requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r /ctf/requirements.txt
+
+COPY server.py /ctf/server.py
+RUN chmod 0755 /ctf/server.py
+
+COPY entry.sh /ctf/entry.sh
+RUN chmod 0755 /ctf/entry.sh
+
+COPY index.html /ctf/index.html
+
+COPY flag.txt /ctf/flag.txt
+
+EXPOSE 5000
+
+ENTRYPOINT ["/ctf/entry.sh"]
