@@ -9,13 +9,13 @@ RUN pip3 install -r /ctf/requirements.txt
 COPY server.py /ctf/server.py
 RUN chmod 0755 /ctf/server.py
 
-COPY entry.sh /ctf/entry.sh
-RUN chmod 0755 /ctf/entry.sh
-
 COPY index.html /ctf/index.html
 
 COPY flag.txt /ctf/flag.txt
 
-EXPOSE 5000
+#EXPOSE 5000
+EXPOSE 8000
 
+COPY entry.sh /ctf/entry.sh
+RUN chmod 0755 /ctf/entry.sh
 ENTRYPOINT ["/ctf/entry.sh"]
