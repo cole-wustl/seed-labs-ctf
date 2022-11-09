@@ -14,3 +14,5 @@ services:
       restart: on-failure
       ports:
          - 80:80
+      depends_on:
+         - flask_web_app
