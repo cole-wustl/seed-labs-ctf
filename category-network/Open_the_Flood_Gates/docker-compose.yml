@@ -13,6 +13,9 @@ services:
       container_name: ctf_rproxy
       restart: on-failure
       ports:
-         - 80:80
+         #- 80:80
+         - target: 80 # container port
+           published: 80 # host port
+           mode: host
       depends_on:
          - flask_web_app
