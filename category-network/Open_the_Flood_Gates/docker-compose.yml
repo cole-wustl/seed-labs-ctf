@@ -1,4 +1,4 @@
-version: "3"
+version: '3.8'
 
 services:
    flask_web_app:
@@ -6,16 +6,17 @@ services:
          context: ./img_flask_app
       container_name: ctf_app
       restart: on-failure
+      network_mode: host
+      ports:
+         - 8000:8000
 
    nginx_reverse_proxy:
       build:
          context: ./img_nginx
       container_name: ctf_rproxy
       restart: on-failure
+      network_mode: host
       ports:
-         #- 80:80
-         - target: 80 # container port
-           published: 80 # host port
-           mode: host
+         - 80:80
       depends_on:
          - flask_web_app
