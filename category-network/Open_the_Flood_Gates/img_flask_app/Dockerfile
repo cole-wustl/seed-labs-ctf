@@ -11,9 +11,6 @@ RUN chmod 0755 /ctf/server.py
 
 COPY index.html /ctf/index.html
 
-COPY flag.txt /ctf/flag.txt
-
-#EXPOSE 5000
 EXPOSE 8000
 
 COPY entry.sh /ctf/entry.sh
