@@ -6,8 +6,9 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from faker import Faker
 import random
 import os
+import threading
 
-MAX_PACKETS_TO_SEND = 10
+MAX_PACKETS_TO_SEND = 1000
 
 flag = os.environ['CTF_FLAG']
 
@@ -52,7 +53,9 @@ def landing_page():
    dstIP = request.headers["X-Forwarded-For"]
    #send_icmp_reply(dstIP)
    #send_dns_request(dstIP)
-   flood_packets(dstIP)
+   theThread = threading.Thread(target = flood_packets, args = (dstIP,))
+   theThread.start()
+   #flood_packets(dstIP)
    return send_file("/ctf/index.html")
 
 if __name__ == "__main__":
