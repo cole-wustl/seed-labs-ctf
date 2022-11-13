@@ -11,6 +11,10 @@ RUN chmod 0755 /ctf/server.py
 
 COPY index.html /ctf/index.html
 
+COPY health.sh /ctf/health.sh
+RUN chmod 0755 /ctf/health.sh
+HEALTHCHECK --interval=60s --timeout=10s --start-period=30s --retries=1 CMD /ctf/health.sh
+
 EXPOSE 8000
 
 COPY entry.sh /ctf/entry.sh
