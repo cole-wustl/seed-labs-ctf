@@ -34,28 +34,29 @@ def craft_dns_request(dstIP):
 def flood_packets(dstIP):
    random.seed()
    packetWithFlag = random.randint(0, MAX_PACKETS_TO_SEND - 1)
-   
+
    for i in range(MAX_PACKETS_TO_SEND):
       packetToSend = random.choice(("ICMP", "DNS"))
-      
+
       if packetToSend == "ICMP":
          packetToSend = craft_icmp_reply(dstIP)
       elif packetToSend == "DNS":
          packetToSend = craft_dns_request(dstIP)
-       
+
       if i == packetWithFlag:
-         packetToSend = packetToSend/flag 
+         packetToSend = packetToSend/flag
 
       send(packetToSend)
 
 @application.route("/")
 def landing_page():
    dstIP = request.headers["X-Forwarded-For"]
-   
+
    theThread = threading.Thread(target = flood_packets, args = (dstIP,))
    theThread.start()
-   
+
    return send_file("/ctf/index.html")
 
 if __name__ == "__main__":
    application.run("0.0.0.0")
+
