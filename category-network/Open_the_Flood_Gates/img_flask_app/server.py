@@ -2,6 +2,7 @@
 
 from flask import *
 from scapy.all import *
+from scapy.layers.http import *
 from werkzeug.middleware.proxy_fix import ProxyFix
 from faker import Faker
 import random
@@ -56,7 +57,7 @@ def flood_packets(dstIP):
 
       send(packetToSend)
 
-def flood_icmp_echo_request(dstIP):
+def flood_icmp_echo_requests(dstIP):
    MAX_ICMP_PACKETS = 1000
    random.seed()
    packetWithHint = random.randint(0, MAX_ICMP_PACKETS - 1)
@@ -65,24 +66,65 @@ def flood_icmp_echo_request(dstIP):
       if i == packetWithHint:
          packet = packet/("VISIT /sniff")
       else:
-         packet = packet/(fake.binary(length = 64))
-         #packet = packet/(fake.sentence(nb_words = 10))
+         packet = packet/(('\0' * 64) + "ARE YOU LISTENING?")
       send(packet)
 
+def flood_dns_requests(dstIP):
+   MAX_DNS_PACKETS = 500
+   random.seed()
+   packetWithHint = random.randint(0, MAX_DNS_PACKETS - 1)
+   for i in range(MAX_DNS_PACKETS):
+      packet = craft_dns_request(dstIP)
+      if i == packetWithHint:
+         packet = packet/("NAVIGATE TO /capture")
+      else:
+         packet = packet/(('0' * random.randint(0, 100)) + "ARE YOU ANALYZING?")
+      send(packet)
+
+def tcp_connection(dstIP):
+   a = TCP_client.tcplink(HTTP, dstIP, 80)
+   a.send(HTTPRequest())
+   #random.seed()
+   #sport = random.randint(1024, 65535)
+   #dport = random.randint(1024, 65535)
+   #sport = 8225
+   #dport = 6969
+   #ip = IP(dst = dstIP)
+   #SYN = TCP(sport = sport, dport = dport, flags = 'S', seq = 1000)
+   #SYNACK = sr1(ip/SYN/"FROM SERVER.PY")
+   #if SYNACK:
+   #   print("GOT SYNACK")
+   #   ACK = TCP(sport = sport, dport = dport, flags = 'A', seq = SYNACK.ack, ack = SYNACK.seq + 1)
+   #   send(ip/ACK/"FROM SERVER.PY")
+
 @application.route("/")
-def index():
+def root_page():
    dstIP = request.headers["X-Forwarded-For"]
-   theThread = threading.Thread(target = flood_icmp_echo_request, args = (dstIP,))
+   theThread = threading.Thread(target = flood_icmp_echo_requests, args = (dstIP,))
    theThread.start()
-   return send_file("/ctf/index.html")
+   return send_file("/ctf/packet_analyzer.html")
+
+@application.route("/sniff")
+def sniff():
+   dstIP = request.headers["X-Forwarded-For"]
+   theThread = threading.Thread(target = flood_dns_requests, args = (dstIP,))
+   theThread.start()
+   return send_file("/ctf/internet_protocol.html")
+
+@application.route("/capture")
+def capture():
+   dstIP = request.headers["X-Forwarded-For"]
+   theThread = threading.Thread(target = tcp_connection, args = (dstIP,))
+   theThread.start()
+   return send_file("/ctf/transmission_control_protocol.html")
 
 @application.route("/flag")
 def fake_flag():
-   return f"<h1> The flag is: {fake.word()} </h1>"
+   return f"<h1> <center> The flag is: {fake.word()} </center> </h1>"
 
 @application.route("/<page>")
 def generic_page(page):
-   return f"<h1> Welcome to {page} </h1>\n<p> {fake.paragraph(nb_sentences = 10)} </p>"
+   return f"<h1> <center> Welcome to {page}! </center> </h1>"
 
 if __name__ == "__main__":
    application.run("0.0.0.0")
