@@ -25,10 +25,10 @@ def craft_icmp_reply(dstIP):
    packet = ip/icmp
    return packet
 
-def craft_dns_request(dstIP):
-   ip = IP(src = fake.ipv4_public(), dst = dstIP)
+def craft_dns_reply(dstIP):
+   ip = IP(src = "0.0.0.0", dst = dstIP)
    udp = UDP(dport = 53)
-   dns = DNS(qd = DNSQR(qname = fake.domain_name(), qtype = "A"))
+   dns = DNS(qr = 1, qd = DNSQR(qname = fake.ipv4_private(), qtype = "A")) # qr = 1 means reply
    packet = ip/udp/dns
    return packet
 
@@ -50,12 +50,12 @@ def flood_icmp(dstIP):
          packet = packet/(('\0' * 64) + "ARE YOU LISTENING?")
       send(packet)
 
-def flood_dns_requests(dstIP):
+def flood_dns(dstIP):
    MAX_DNS_PACKETS = 500
    random.seed()
    packetWithHint = random.randint(0, MAX_DNS_PACKETS - 1)
    for i in range(MAX_DNS_PACKETS):
-      packet = craft_dns_request(dstIP)
+      packet = craft_dns_reply(dstIP)
       if i == packetWithHint:
          packet = packet/("NAVIGATE TO /capture")
       else:
@@ -83,14 +83,14 @@ def root_page():
    dstIP = request.headers["X-Forwarded-For"]
    theThread = threading.Thread(target = flood_icmp, args = (dstIP,))
    theThread.start()
-   return send_file("/ctf/packet_analyzer.html")
+   return "<h1><a href='https://en.wikipedia.org/wiki/Packet_analyzer' target='_blank'>Packet Analyzer</a></h1>"
 
 @application.route("/sniff")
 def sniff():
    dstIP = request.headers["X-Forwarded-For"]
-   theThread = threading.Thread(target = flood_dns_requests, args = (dstIP,))
+   theThread = threading.Thread(target = flood_dns, args = (dstIP,))
    theThread.start()
-   return send_file("/ctf/internet_protocol.html")
+   return "<h1><a href='https://datatracker.ietf.org/doc/html/rfc1035' target='_blank'>RFC 1035</a></h1>"
 
 @application.route("/capture")
 def capture():
