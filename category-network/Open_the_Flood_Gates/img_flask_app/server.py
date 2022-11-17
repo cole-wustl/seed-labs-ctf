@@ -19,9 +19,9 @@ application.wsgi_app = ProxyFix(application.wsgi_app, x_for=1, x_proto=1, x_host
 
 fake = Faker()
 
-def craft_icmp_request(dstIP):
-   ip = IP(src = fake.ipv4_public(), dst = dstIP)
-   icmp = ICMP(type = 8) # Echo request
+def craft_icmp_reply(dstIP):
+   ip = IP(src = "0.0.0.0", dst = dstIP)
+   icmp = ICMP(type = 0) # Echo reply
    packet = ip/icmp
    return packet
 
@@ -38,31 +38,12 @@ def craft_tcp_syn(dstIP):
    packet = ip/tcp
    return packet
 
-def flood_packets(dstIP):
-   random.seed()
-   packetWithFlag = random.randint(0, MAX_PACKETS_TO_SEND - 1)
-
-   for i in range(MAX_PACKETS_TO_SEND):
-      packetToSend = random.choice(("ICMP", "DNS", "TCP"))
-
-      if packetToSend == "ICMP":
-         packetToSend = craft_icmp_request(dstIP)
-      elif packetToSend == "DNS":
-         packetToSend = craft_dns_request(dstIP)
-      elif packetToSend == "TCP":
-         packetToSend = craft_tcp_syn(dstIP)
-
-      if i == packetWithFlag:
-         packetToSend = packetToSend/flag
-
-      send(packetToSend)
-
-def flood_icmp_echo_requests(dstIP):
+def flood_icmp(dstIP):
    MAX_ICMP_PACKETS = 1000
    random.seed()
    packetWithHint = random.randint(0, MAX_ICMP_PACKETS - 1)
    for i in range(MAX_ICMP_PACKETS):
-      packet = craft_icmp_request(dstIP)
+      packet = craft_icmp_reply(dstIP)
       if i == packetWithHint:
          packet = packet/("VISIT /sniff")
       else:
@@ -100,7 +81,7 @@ def tcp_connection(dstIP):
 @application.route("/")
 def root_page():
    dstIP = request.headers["X-Forwarded-For"]
-   theThread = threading.Thread(target = flood_icmp_echo_requests, args = (dstIP,))
+   theThread = threading.Thread(target = flood_icmp, args = (dstIP,))
    theThread.start()
    return send_file("/ctf/packet_analyzer.html")
 
