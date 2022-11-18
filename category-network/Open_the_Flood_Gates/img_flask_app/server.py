@@ -9,8 +9,6 @@ import random
 import os
 import threading
 
-MAX_PACKETS_TO_SEND = 1000
-
 flag = os.environ['CTF_FLAG']
 
 application = Flask(__name__)
@@ -26,17 +24,22 @@ def craft_http_reply(dstIP):
    packet = ip/udp/http
    return packet
 
+def flood_http(dstIP):
+   MAX_HTTP_PACKETS = 250
+   random.seed()
+   packetWithFlag = random.randint(0, MAX_HTTP_PACKETS - 1)
+   for i in range(MAX_HTTP_PACKETS):
+      packet = craft_http_reply(dstIP)
+      if i == packetWithFlag:
+         packet = packet/(" " + flag + " ")
+      else:
+         packet = packet/(" FOLLOW ME! ")
+      send(packet)
+
 def craft_icmp_reply(dstIP):
    ip = IP(src = "0.0.0.0", dst = dstIP)
    icmp = ICMP(type = 0) # Echo reply
    packet = ip/icmp
-   return packet
-
-def craft_dns_reply(dstIP):
-   ip = IP(src = "0.0.0.0", dst = dstIP)
-   udp = UDP(dport = 53)
-   dns = DNS(qr = 1, qd = DNSQR(qname = fake.ipv4_private(), qtype = "A")) # qr = 1 means reply
-   packet = ip/udp/dns
    return packet
 
 def flood_icmp(dstIP):
@@ -51,6 +54,13 @@ def flood_icmp(dstIP):
          packet = packet/(('\0' * 64) + "ARE YOU LISTENING?")
       send(packet)
 
+def craft_dns_reply(dstIP):
+   ip = IP(src = "0.0.0.0", dst = dstIP)
+   udp = UDP(dport = 53)
+   dns = DNS(qr = 1, qd = DNSQR(qname = fake.ipv4_private(), qtype = "A")) # qr = 1 means reply
+   packet = ip/udp/dns
+   return packet
+
 def flood_dns(dstIP):
    MAX_DNS_PACKETS = 500
    random.seed()
@@ -63,44 +73,32 @@ def flood_dns(dstIP):
          packet = packet/(('0' * random.randint(0, 100)) + "ARE YOU ANALYZING?")
       send(packet)
 
-def flood_http(dstIP):
-   MAX_HTTP_PACKETS = 250
-   random.seed()
-   packetWithFlag = random.randint(0, MAX_HTTP_PACKETS - 1)
-   for i in range(MAX_HTTP_PACKETS):
-      packet = craft_http_reply(dstIP)
-      if i == packetWithFlag:
-         packet = packet/(" " + flag + " ")
-      else:
-         packet = packet/(" FOLLOW ME! ")
-      send(packet)
-
 @application.route("/")
 def root_page():
    dstIP = request.headers["X-Forwarded-For"]
    theThread = threading.Thread(target = flood_icmp, args = (dstIP,))
    theThread.start()
-   return "<h1><a href='https://en.wikipedia.org/wiki/Packet_analyzer' target='_blank'>Packet Analyzer</a></h1>"
+   return "<h1><center><a href='https://en.wikipedia.org/wiki/Packet_analyzer' target='_blank'>Packet Analyzer</a></center></h1>"
 
 @application.route("/sniff")
 def sniff():
    dstIP = request.headers["X-Forwarded-For"]
    theThread = threading.Thread(target = flood_dns, args = (dstIP,))
    theThread.start()
-   return "<h1><a href='https://datatracker.ietf.org/doc/html/rfc1035' target='_blank'>RFC 1035</a></h1>"
+   return "<h1><center><a href='https://datatracker.ietf.org/doc/html/rfc1035' target='_blank'>RFC 1035</a></center></h1>"
 
 @application.route("/capture")
 def capture():
    dstIP = request.headers["X-Forwarded-For"]
    theThread = threading.Thread(target = flood_http, args = (dstIP,))
    theThread.start()
-   return "<h1>placeholder</h1>"
+   return "<h1><center><a href='https://en.wikipedia.org/wiki/User_Datagram_Protocol#Comparison_of_UDP_and_TCP' target='_blank'>UDP vs. TCP</a></center></h1>"
 
 @application.route("/flag")
 def fake_flag():
    return f"<h1><center>The flag is: {fake.binary(length = random.randint(15, 50)).decode('ascii', 'ignore')}</center></h1>"
 
-@application.route("/<page>")
+@application.route("/<path:page>")
 def generic_page(page):
    return f"<h1><center>Welcome to {page}</center></h1>"
 
