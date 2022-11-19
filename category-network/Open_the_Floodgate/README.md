@@ -2,31 +2,51 @@
 
 ## For the Instructor(s)
 
+### SEED Labs
+
+This CTF challenge is based on the SEED Labs
+[Packet Sniffing and Spoofing Lab](https://seedsecuritylabs.org/Labs_20.04/Networking/Sniffing_Spoofing/).
+Students will be instructed to visit a web page, and will be presented with a simple, static web page.
+Once a student visits the target web page, the web server will begin to send network packets to the student's machine.
+It is up to the student to identify the incoming network traffic, and follow the traffic flow to find the flag.
+
 ### Docker
 
 The Docker application used for this challenge consists of two containers.
 One of the containers is running [nginx](https://hub.docker.com/_/nginx/), functioning as a reverse proxy.
-The other container is based on [Alpine Linux with Python 3](https://hub.docker.com/_/python), and is running both [gunicorn](https://gunicorn.org/) and [flask](https://flask.palletsprojects.com/en/2.2.x/),
+The other container is based on [Alpine Linux with Python 3](https://hub.docker.com/_/python), and is running both
+[gunicorn](https://gunicorn.org/) and [flask](https://flask.palletsprojects.com/en/2.2.x/),
 in which gunicorn feeds HTTP requests form the nginx reverse proxy to the flask web app.
 
-#### Configuring the Docker Image
+The two containers are using [host networking mode](https://docs.docker.com/network/host/), which means that they will not use
+Docker's isolated networking stack, but instead will use the host machine's network stack.
+The reason for using host networking mode is so that the nginx reverse proxy container is able to see the real external IP address of clients
+that send it HTTP requests, which it was unable to do when using the default isolated Docker network.
+The nginx reverse proxy container exposes **port 80** on the host to receive HTTP requests, and the container running the flask web app exposes
+**port 8000** on the host to receive proxied HTTP requests from the nginx container.
+**If you have any other programs on your host machine that use port 80 or port 8000 they will need to be stopped in order to run this CTF
+challenge.**
 
-##### Modifying the Flag
+#### Modifying the Flag
 
 The flag is set as an environment variable in the container running the flask web app.
 To modify the flag:
+
 1. Open the file [`docker-compose.yml`](./docker-compose.yml) in a text editor.
 2. Find the line beginning with `CTF_FLAG`, which is nested under:
 ```
 services
-|
-|__├──├
+└─ flask_web_app
+      └─ environment
+         └─ CTF_FLAG
 ```
+3. Modify the contents between the parenthesis:\
+`CTF_FLAG: "CHANGE ME"` -> `CTF_FLAG: "New_Flag"`
 
-Simply modify the contents of [`src/server/flag.txt`](./src/server/flag.txt) to update the flag.
-There are no restrictions on what `flag.txt` may contain.
+**NOTE:** The flag technically is able to contain white space characters, but it is advised to omit white space characters
+so that there is no confusion when students find the flag.
 
-#### Managing the Docker Container
+#### Managing the Docker App
 
 There is a supplied Bash script, [`dockerHelper.sh`](./dockerHelper.sh), that will assist with managing the Docker container for this CTF.
 Running `dockerHelper.sh` without any parameters or passing it the `-h` parameter will print a help dialogue for the script.
@@ -35,20 +55,26 @@ The following is a summary of the available functions supplied by the script:
 
 | Function                    | Command                         |
 | --------------------------- | ------------------------------- |
-| Build the Docker Image      | `$ [sudo] ./dockerHelper.sh -b` |
 | Start the Docker App        | `$ [sudo] ./dockerHelper.sh -r` |
-| Check the Docker App Status | `$ [sudo] ./dockerHelper.sh -s` |
 | Stop the Docker App         | `$ [sudo] ./dockerHelper.sh -k` |
+| Check the Docker App Status | `$ [sudo] ./dockerHelper.sh -s` |
 
 Commands can be concatenated in one call to the script, and the function will be executed in the order in which the argument flag appears:
 * `$ [sudo] ./dockerHelper -rs` will start the Docker app, then print the status of the app.
-* `$ [sudo] ./dockerHelper -kbr` will stop the Docker app, then rebuild it before running again.
+* `$ [sudo] ./dockerHelper -kr` will stop the Docker app, then run it again.
 
-#### Deploying the Challenge
+### Deploying the Challenge
 
-The source code of the binaries that is given to the students is kept closed source so that the students do not have visibility of it while reverse engineering the binary executable.
-The source code specifies some default values, so please contact the project adminstrators to request a copy of the source code and instructions on how to compile it if you would like to change those default values.
+Instruct the students to use a web browser to view the HTTP page served from port 80 on the host machine running the Docker app:
+<http://DOCKER_APP_HOST_IP:80>
+
+### Troubleshooting
+
+If it seems that the students are not receiving the network packets from the web server, you may need to instruct them to disable any firewalls
+or open the following ports on their machines:
+* Port 53
+* Port 80
 
 ## For the Student(s)
 
-You will be supplied a binary executable and it is your task to reverse engineer the binary in order to retrieve the flag.
+Using a web browser, navigate to the following HTTP website, specifying port 80 as the destination port: <http://DOCKER_APP_HOST_IP:80>
