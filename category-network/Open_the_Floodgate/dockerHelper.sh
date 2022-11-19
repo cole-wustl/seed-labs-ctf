@@ -3,7 +3,7 @@
 printHelp() {
    echo
    echo "Usage: dockerHelper.sh <OPTIONS>"
-   echo "Manage the Docker app for the 'Open the Flood Gates' CTF."
+   echo "Manage the Docker app for the 'Open the Floodgate' CTF."
    echo "If any of the Docker commands fail you may need to run with root priviliges."
    echo "Options can be combined and will be executed in the order supplied."
    echo

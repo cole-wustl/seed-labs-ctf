@@ -10,7 +10,7 @@ services:
       ports:
          - 8000:8000
       environment:
-         CTF_FLAG: "Flaggy_McFlagFace"
+         CTF_FLAG: "CHANGE ME"
 
    nginx_reverse_proxy:
       build:
