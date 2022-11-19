@@ -9,7 +9,6 @@ services:
       network_mode: host
       ports:
          - 8000:8000
-         - 8225:8225
       environment:
          CTF_FLAG: "Flaggy_McFlagFace"
 
