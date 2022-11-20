@@ -2,9 +2,6 @@ FROM python:3-alpine
 
 LABEL Author="Dylan Simmons <dylan.simmons@wustl.edu>"
 
-#ARG PACKAGES="libpcap"
-#RUN apk add --no-cache ${PACKAGES}
-
 COPY requirements.txt /ctf/requirements.txt
 RUN pip3 install --upgrade pip
 RUN pip3 install -r /ctf/requirements.txt
