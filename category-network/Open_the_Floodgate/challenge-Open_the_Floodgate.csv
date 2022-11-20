@@ -1,2 +1,2 @@
 name,description,category,value,type,state,max_attempts,flags,tags,hints,type_data
-"Open the Floodgate","The complete picture is often more than just what you see on the blank page.","Networking",10,standard,hidden,0,"CHANGE_ME",,,
+"Open the Floodgate","The complete picture is often more than just what you see on the blank page. Navigate to the following page via a web browser: <http://DOCKER_HOST_IP:80>","Networking",10,standard,hidden,0,"CHANGE_ME",,,
