@@ -60,8 +60,11 @@ The following is a summary of the available functions supplied by the script:
 | Check the Docker App Status | `$ [sudo] ./dockerHelper.sh -s` |
 
 Commands can be concatenated in one call to the script, and the function will be executed in the order in which the argument flag appears:
-* `$ [sudo] ./dockerHelper -rs` will start the Docker app, then print the status of the app.
-* `$ [sudo] ./dockerHelper -kr` will stop the Docker app, then run it again.
+
+| Functions                                               | Command                       |
+| ------------------------------------------------------- | ----------------------------- |
+| Start the Docker app, then print the status of the app. | `$ [sudo] ./dockerHelper -rs` |
+| Stop the Docker app, then start it again.               | `$ [sudo] ./dockerHelper -kr` |
 
 ### Deploying the Challenge
 
