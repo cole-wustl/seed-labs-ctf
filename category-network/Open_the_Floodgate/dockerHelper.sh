@@ -1,6 +1,7 @@
 #!/bin/bash
 
-printHelp() {
+printHelp()
+{
    echo
    echo "Usage: dockerHelper.sh <OPTIONS>"
    echo "Manage the Docker app for the 'Open the Floodgate' CTF."
@@ -56,4 +57,3 @@ else
    done
    exit 0
 fi
-
