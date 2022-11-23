@@ -13,22 +13,21 @@ Please see the [`manual/README`](./manual/README.md) document for instructions o
 Many of the CTF challenges are based on existing [SEED Labs 2.0 exercises](https://seedsecuritylabs.org/Labs_20.04/), and in some cases may reuse source code from the SEED Labs.
 The mapping from SEED Labs to corresponding CTF challenges is as follows:
 
-| SEED Lab | CTF Challange(s) |
-| - | - |
-| [Crypto Lab -- Secret-Key Encryption](https://seedsecuritylabs.org/Labs_20.04/Crypto/Crypto_Encryption/) | [Encrypted_Image](./category-crypto/Encrypted_Image), [EncryptionnoitpyrcnE](./category-crypto/EncryptionnoitpyrcnE) |
-| [MD5 Collision Attack Lab](https://seedsecuritylabs.org/Labs_20.04/Crypto/Crypto_MD5_Collision/) | [Sum_More_Stuff_To_Do](./category-crypto/Sum_More_Stuff_To_Do) |
-| [PKI Lab](https://seedsecuritylabs.org/Labs_20.04/Crypto/Crypto_PKI/) | [GPG_Encryption](./category-crypto/GPG_Encryption) |
-| [Pseudo Random Number Generation Lab](https://seedsecuritylabs.org/Labs_20.04/Crypto/Crypto_Random_Number/) | [Key_Submission](./category-crypto/Key_Submission) |
-| [RSA Encryption and Signature Lab](https://seedsecuritylabs.org/Labs_20.04/Crypto/Crypto_RSA/) | [Do_It_Yourself_Crypto](./category-crypto/Do_It_Yourself_Crypto) |
-| [Packet Sniffing and Spoofing Lab](https://seedsecuritylabs.org/Labs_20.04/Networking/Sniffing_Spoofing/) | [Ok_Google_Whats_TCP](./category-network/Ok_Google_Whats_TCP) |
-| [Buffer-Overflow Attack Lab (Server Version)](https://seedsecuritylabs.org/Labs_20.04/Software/Buffer_Overflow_Server/) | [Too_Much_Flow](./category-software/Too_Much_Flow)|
-| [Format-String Vulnerability Lab](https://seedsecuritylabs.org/Labs_20.04/Software/Format_String/) | [Format_String](./category-software/Format_String) |
-| [Race-Condition Vulnerability Lab](https://seedsecuritylabs.org/Labs_20.04/Software/Race_Condition/) | [Symlinks](./category-software/Symlinks) |
-| [Return-to-libc Attack Lab](https://seedsecuritylabs.org/Labs_20.04/Software/Return_to_Libc/) | [Return_to_Libc](./category-software/Return_to_Libc) |
-| [Cross-Site Scripting Attack Lab (Elgg)](https://seedsecuritylabs.org/Labs_20.04/Web/Web_XSS_Elgg/) | [Theres_An_Error_In_My_Image](./category-web/Theres_An_Error_In_My_Image) |
-| [SQL Injection Attack Lab](https://seedsecuritylabs.org/Labs_20.04/Web/Web_SQL_Injection/) | [SQL_Injection](./category-web/SQL_Injection) |
-
----
+| SEED Lab                                                                                                                | CTF Challange(s)                                                                                                     |
+| ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [Crypto Lab -- Secret-Key Encryption](https://seedsecuritylabs.org/Labs_20.04/Crypto/Crypto_Encryption/)                | [Encrypted_Image](./category-crypto/Encrypted_Image), [EncryptionnoitpyrcnE](./category-crypto/EncryptionnoitpyrcnE) |
+| [MD5 Collision Attack Lab](https://seedsecuritylabs.org/Labs_20.04/Crypto/Crypto_MD5_Collision/)                        | [Sum_More_Stuff_To_Do](./category-crypto/Sum_More_Stuff_To_Do)                                                       |
+| [PKI Lab](https://seedsecuritylabs.org/Labs_20.04/Crypto/Crypto_PKI/)                                                   | [GPG_Encryption](./category-crypto/GPG_Encryption)                                                                   |
+| [Pseudo Random Number Generation Lab](https://seedsecuritylabs.org/Labs_20.04/Crypto/Crypto_Random_Number/)             | [Key_Submission](./category-crypto/Key_Submission)                                                                   |
+| [RSA Encryption and Signature Lab](https://seedsecuritylabs.org/Labs_20.04/Crypto/Crypto_RSA/)                          | [Do_It_Yourself_Crypto](./category-crypto/Do_It_Yourself_Crypto)                                                     |
+| [Packet Sniffing and Spoofing Lab](https://seedsecuritylabs.org/Labs_20.04/Networking/Sniffing_Spoofing/)               | [Ok_Google_Whats_TCP](./category-network/Ok_Google_Whats_TCP)                                                        |
+| [Buffer-Overflow Attack Lab (Server Version)](https://seedsecuritylabs.org/Labs_20.04/Software/Buffer_Overflow_Server/) | [Too_Much_Flow](./category-software/Too_Much_Flow)                                                                   |
+| [Format-String Vulnerability Lab](https://seedsecuritylabs.org/Labs_20.04/Software/Format_String/)                      | [Format_String](./category-software/Format_String)                                                                   |
+| [Race-Condition Vulnerability Lab](https://seedsecuritylabs.org/Labs_20.04/Software/Race_Condition/)                    | [Symlinks](./category-software/Symlinks)                                                                             |
+| [Return-to-libc Attack Lab](https://seedsecuritylabs.org/Labs_20.04/Software/Return_to_Libc/)                           | [Return_to_Libc](./category-software/Return_to_Libc)                                                                 |
+| [Cross-Site Scripting Attack Lab (Elgg)](https://seedsecuritylabs.org/Labs_20.04/Web/Web_XSS_Elgg/)                     | [Theres_An_Error_In_My_Image](./category-web/Theres_An_Error_In_My_Image)                                            |
+| [SQL Injection Attack Lab](https://seedsecuritylabs.org/Labs_20.04/Web/Web_SQL_Injection/)                              | [SQL_Injection](./category-web/SQL_Injection)                                                                        |
+| [Packet Sniffing and Spoofing Lab](https://seedsecuritylabs.org/Labs_20.04/Networking/Sniffing_Spoofing/)               | [Open_the_Floodgate](./category-network/Open_the_Floodgate)                                                          |
 
 ## Credits
 
@@ -57,3 +56,4 @@ Please contact [Dylan Simmons](mailto:dylan.simmons@wustl.edu) or [Steve Cole](m
 * Questions
 * Comments
 * Suggestions
+
