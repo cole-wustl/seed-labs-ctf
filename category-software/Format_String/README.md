@@ -94,6 +94,10 @@ As specified in the `docker-compose.yml` file, the easy version of the challenge
 A TCP connection should be established on either of these two ports to interact with the corresponding challenge.
 It is recommended for the students to use [netcat](https://en.wikipedia.org/wiki/Netcat) to establish a TCP connection with the challenge servers.
 
+#### Docker Architecture
+
+![Placeholder](./src/readme/CTF_challenge_architecture-Format_String.pdf)
+
 ## For the Student(s)
 
 There are two versions of this challenge, an easy and a hard version.
