@@ -96,6 +96,8 @@ It is recommended for the students to use [netcat](https://en.wikipedia.org/wiki
 
 #### Docker Architecture
 
+The following image shows the Docker architecture of the CTF challenge:
+
 ![Placeholder](./src/readme/CTF_challenge_architecture-Format_String.png)
 
 ## For the Student(s)
