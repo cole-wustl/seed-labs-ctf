@@ -50,6 +50,16 @@ Users can access the application from a web browser, and should specify the foll
    * Port `60080` for non-TLS connections, [http://\<server-ip\>:60080](http://\<server-ip\>:60080)
    * Port `60443` for TLS enabled connections, [https://\<server-ip\>:60443](https://\<server-ip\>:60443).
 
+### Docker Architecture
+
+The following image shows the Docker architecture of the easy version of the CTF challenge:
+
+![The Docker architecture for the CTF challenge SQL Injection (easy)](./src/readme/CTF_challenge_architecture-SQL_Injection_easy.png)
+
+The following image shows the Docker architecture of the hard version of the CTF challenge:
+
+![The Docker architecture for the CTF challenge SQL Injection (hard)](./src/readme/CTF_challenge_architecture-SQL_Injection_hard.png)
+
 ## Implementation
 
 Whenever a web client connects to the web app, a new PHP session will be started.
@@ -67,3 +77,4 @@ If you suspect that the database is growing too large, you can manually delete t
 
 The file `challenge-Web_SQL_Injection_[easy|difficult].csv` can be loaded into CTFd to automatically add the challenge to an existing CTFd instance.
 Additionally, the challenge is included in the `SEED_Labs_CTF-Web.zip` file, which is a snapshot of a CTFd instance will all of the web CTF challenges loaded, as well as the `challenges_all.zip` file, which is a snapshot of a CTFd instance with all of the CTF challenges from all categories loaded.
+
