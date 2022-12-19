@@ -66,6 +66,12 @@ Commands can be concatenated in one call to the script, and the function will be
 | Start the Docker app, then print the status of the app. | `$ [sudo] ./dockerHelper -rs` |
 | Stop the Docker app, then start it again.               | `$ [sudo] ./dockerHelper -kr` |
 
+#### Docker Architecture
+
+The following image shows the Docker architecture of the CTF challenge:
+
+![The Docker architecture for the CTF challenge Open the Floodgate](./src/readme/CTF_challenge_architecture-Open_the_Floodgate.png)
+
 ### Deploying the Challenge
 
 Instruct the students to use a web browser to view the HTTP page served from port 80 on the host machine running the Docker app:
