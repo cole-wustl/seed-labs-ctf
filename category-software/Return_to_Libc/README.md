@@ -91,6 +91,12 @@ Those default credentials are:
 The first time the student connects to their instance they will be prompted to change the password, and after successfully changing the password the SSH connection will be broken.
 The student can then connect via SSH using their newly changed password going forward.
 
+#### Docker Architecture
+
+The following image shows the Docker architecture of the CTF challenge:
+
+![The Docker architecture for the CTF challenge Return-to-libc](./src/readme/CTF_challenge_architecture-Return_to_Libc.png)
+
 ## For the Student(s)
 
 You instructor will provide you with a port number to use when establishing an SSH connection to the machine hosting the CTF.

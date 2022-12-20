@@ -44,7 +44,13 @@ Commands can be concatenated in one call to the script, and the function will be
 #### Deploying the Challenge
 
 The source code of the binaries that is given to the students is kept closed source so that the students do not have visibility of it while reverse engineering the binary executable.
-The source code specifies some default values, so please contact the project adminstrators to request a copy of the source code and instructions on how to compile it if you would like to change those default values.
+The source code specifies some default values, so please contact the project administrators to request a copy of the source code and instructions on how to compile it if you would like to change those default values.
+
+#### Docker Architecture
+
+The following image The following image shows the Docker architecture of the CTF challenge:
+
+![The Docker architecture for the CTF challenge Identify Yourself](./src/readme/CTF_challenge_architecture-Identify_Yourself.png)
 
 ## For the Student(s)
 
