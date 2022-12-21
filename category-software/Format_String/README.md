@@ -52,10 +52,13 @@ The start script can start the easy version container or the hard version contai
 
 **WARNING:** In order to run this CTF, Address Space Layout Randomization ([ASLR](https://en.wikipedia.org/wiki/Address_space_layout_randomization)) will be disabled on the host machine that's hosting the challenge.
 ASLR must be disabled on the host so that it'll be disabled in the Docker app.
-Disabling ASLR makes it much more likely that this CTF can be solved, since ASLR is a countermeasure that is quite effective at mitigating vulnerabilities like the one posed by format string.
+Disabling ASLR makes it much more likely that this CTF can be solved, since ASLR is a countermeasure that is quite effective at mitigating buffer overflow attacks.
 The `start.sh` script will disable ASLR on the host machine, and will print a large and obvious warning message about this.
-When the Docker container starts up, it will check to see if ASLR is disabled in the container.
-If ASLR is enabled in the container, then the container will not start properly, and a process that keeps the Docker container alive will not be started.
+**If ASLR is enabled when the Docker application starts, then the Docker application will not start properly**.
+When the Ubuntu containers start, a that status of ASLR is queried.
+If ASLR is enabled, then the container will die (the SSH server that is the main process keeping the container alive will not be started), and querying the status (via `$ docker ps`) of the Docker application will show that the container is stuck in an infinite loop of restarting.
+This infinite loop of restarting is because there is no process running that will keep the Docker container alive, so the container exits, but Docker is configured to restart any container that exits.
+If you see that the Ubuntu containers are stuck in a loop of restarting, then you should disable ASLR on your host machine so that they'll be disabled in the Ubuntu containers.
 
 You should build the Docker image before running the start script.
 To start the Docker app:
