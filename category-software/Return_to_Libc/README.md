@@ -54,6 +54,11 @@ There is a start script supplied for both the easy and hard versions of the chal
 ASLR must be disabled on the host so that it'll be disabled in the Docker app.
 Disabling ASLR makes it much more likely that this CTF can be solved, since ASLR is a countermeasure that is quite effective at mitigating buffer overflow attacks.
 The `start.sh` script will disable ASLR on the host machine, and will print a large and obvious warning message about this.
+**If ASLR is enabled** when the Docker application starts, then the Docker application will not start properly.
+When the Ubuntu containers start, a that status of ASLR is queried.
+If ASLR is enabled, then the container will die (the SSH server that is the main process keeping the container alive will not be started), and querying the status (via `$ docker ps`) of the Docker application will show that the container is stuck in an infinite loop of restarting.
+This infinite loop of restarting is because there is no process running that will keep the Docker container alive, so the container exits, but Docker is configured to restart any container that exits.
+If you see that the Ubuntu containers are stuck in a loop of restarting, then you should disable ASLR on your host machine so that they'll be disabled in the Ubuntu containers.
 
 You should build the Docker image before running the start script.
 To start the Docker app:
