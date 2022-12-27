@@ -1,6 +1,17 @@
 # Open-Source CTF Platform
 
+## Contents
+
+1. [Welcome](#welcome)
+2. [Seed Labs Covered](#seed-labs-covered)
+3. [Credits](#credits)
+4. [Feedback and Collaboration](#feedback-and-collaboration)
+5. [Publications](#publications)
+6. [Contact Info](#contact-info)
+
 ---
+
+## Welcome
 
 * [Welcome video](./manual/videos/SEED_CTF_intro.mp4)
 
@@ -56,4 +67,3 @@ Please contact [Dylan Simmons](mailto:dylan.simmons@wustl.edu) or [Steve Cole](m
 * Questions
 * Comments
 * Suggestions
-
