@@ -2,12 +2,12 @@
 
 ## Contents
 
-1. [Welcome](#welcome)
-2. [Seed Labs Covered](#seed-labs-covered)
-3. [Credits](#credits)
-4. [Feedback and Collaboration](#feedback-and-collaboration)
-5. [Publications](#publications)
-6. [Contact Info](#contact-info)
+* [Welcome](#welcome)
+* [Seed Labs Covered](#seed-labs-covered)
+* [Credits](#credits)
+* [Feedback and Collaboration](#feedback-and-collaboration)
+* [Publications](#publications)
+* [Contact Info](#contact-info)
 
 ---
 

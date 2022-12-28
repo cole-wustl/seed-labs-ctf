@@ -1,5 +1,25 @@
 # Open-Source CTF Platform Manual
 
+## Contents
+
+* [For Administrators](#for-administrators)
+   * [Videos](#videos)
+   * [CTFd](#ctfd)
+      * [CTFD-as-a-service (hosted)](#ctfd-as-a-service-hosted)
+      * [Self-hosted](#self-hosted)
+      * [Admin Account Setup](#admin-account-setup)
+      * [Changing Admin Account Credentials](#changing-admin-account-credentials)
+      * [View, Edit, and Create Challenges](#view-edit-and-create-challenges)
+      * [Importing challenges](#importing-challenges)
+         * [Importing challenges in `.zip` files](#importing-challenges-in-zip-files)
+         * [Importing challenges in `.csv` files](#importing-challenges-in-csv-files)
+      * [Challenge Docker Containers](#challenge-docker-containers)
+         * [Shell Scripts](#shell-scripts)
+      * [Management and Troubleshooting](#management-and-troubleshooting)
+* [For Students](#for-students)
+   * [What is a CTF?](#what-is-a-ctf)
+   * [How to participate](#how-to-participate)
+
 ---
 
 ## For Administrators
@@ -103,7 +123,18 @@ There are a few differences between the two import options:
 Most of the CTF challenges will require spinning up a Docker container that will host the infrastructure that is unique to running that challenge.
 The pertinent information for setting up challenge specific Docker containers will be included in a `README.md` file along with the other CTF challenge files.
 
-#### Management & Troubleshooting
+##### Shell Scripts
+
+Shell scripts are provided in each challenge directory to assist with building, starting, and stopping the challenge Docker containers.
+
+**NOTE:** When running the Docker containers on Linux, root priviliges (`sudo`) may be needed when running the included shell scripts that assist with building, starting, and stopping the CTF Docker containers.
+When running the helper scripts on Linux, simply prepend `sudo` on the command line:
+```
+$ sudo ./SCRIPT_NAME.sh
+```
+Root priviliges should not be needed when running Docker on MacOS.
+
+#### Management and Troubleshooting
 
 Student passwords can be reset through the admin panel by clicking on the user in the "Users" tab.
 If the server goes down, the containers for both CTFd and the docker challenges may need to be restarted. Use the same docker command from the CTFd setup instructions to launch CTFd, and use the "start containers" bash script in the server challenges folder to restart all challenge containers.
