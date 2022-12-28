@@ -1,5 +1,20 @@
 # CTF - Open the Floodgate
 
+## Contents
+
+* [For the Instructor(s)](#for-the-instructors)
+   * [SEED Labs](#seed-labs)
+   * [Docker](#docker)
+      * [Host Networking Mode](#host-networking-mode)
+      * [Modifying the Flag](#modifying-the-flag)
+      * [Managing the Docker App](#managing-the-docker-app)
+      * [Docker Architecture](#docker-architecture)
+   * [Deploying the Challenge](#deploying-the-challenge)
+   * [Troubleshooting](#troubleshooting)
+* [For the Student(s)](#for-the-students)
+
+---
+
 ## For the Instructor(s)
 
 ### SEED Labs
@@ -18,14 +33,19 @@ The other container is based on [Alpine Linux with Python 3](https://hub.docker.
 [gunicorn](https://gunicorn.org/) and [flask](https://flask.palletsprojects.com/en/2.2.x/),
 in which gunicorn feeds HTTP requests form the nginx reverse proxy to the flask web app.
 
+#### Host Networking Mode
+
 The two containers are using [host networking mode](https://docs.docker.com/network/host/), which means that they will not use
 Docker's isolated networking stack, but instead will use the host machine's network stack.
 The reason for using host networking mode is so that the nginx reverse proxy container is able to see the real external IP address of clients
 that send it HTTP requests, which it was unable to do when using the default isolated Docker network.
-The nginx reverse proxy container exposes **port 80** on the host to receive HTTP requests, and the container running the flask web app exposes
+The nginx reverse proxy container exposes **port 3580** on the host to receive HTTP requests, and the container running the flask web app exposes
 **port 8000** on the host to receive proxied HTTP requests from the nginx container.
-**If you have any other programs on your host machine that use port 80 or port 8000 they will need to be stopped in order to run this CTF
+**If you have any other programs on your host machine that use port 3580 or port 8000 they will need to be stopped in order to run this CTF
 challenge.**
+
+**NOTE:** Docker host networking mode is only availabe on Linux, and not MacOS or Windows.
+That means this challenge will need to be hosted on a Linux machine!
 
 #### Modifying the Flag
 
@@ -74,8 +94,8 @@ The following image shows the Docker architecture of the CTF challenge:
 
 ### Deploying the Challenge
 
-Instruct the students to use a web browser to view the HTTP page served from port 80 on the host machine running the Docker app:
-<http://DOCKER_APP_HOST_IP:80>
+Instruct the students to use a web browser to view the HTTP page served from port 3580 on the host machine running the Docker app:
+<http://DOCKER_APP_HOST_IP:3580>
 
 ### Troubleshooting
 
@@ -86,4 +106,4 @@ or open the following ports on their machines:
 
 ## For the Student(s)
 
-Using a web browser, navigate to the following HTTP website, specifying port 80 as the destination port: <http://DOCKER_APP_HOST_IP:80>
+Using a web browser, navigate to the following HTTP website, specifying port 3580 as the destination port: <http://DOCKER_APP_HOST_IP:3580>
