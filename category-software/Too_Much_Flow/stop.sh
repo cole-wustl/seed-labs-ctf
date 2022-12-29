@@ -1,3 +1,2 @@
 #!/bin/bash
-sudo docker stop $(sudo docker ps --quiet --filter ancestor=too-much-flow:latest)
-
+docker stop $(docker ps --quiet --filter ancestor=too-much-flow:latest)

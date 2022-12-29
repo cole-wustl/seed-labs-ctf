@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo docker build --tag netcow src
+docker build --tag netcow src

@@ -5,7 +5,7 @@ services:
       build: 
          context: './image_www'
       container_name: 'ctf_sqli_web_easy'
-      tty: 'true'
+      tty: true
       restart: 'on-failure'
       networks:
          net-10.9.0.0:
@@ -16,7 +16,7 @@ services:
    mysql:
       build: './image_mysql'
       container_name: 'ctf_sqli_mysql_easy'
-      tty: 'true'
+      tty: true
       restart: 'on-failure'
       networks:
          net-10.9.0.0:

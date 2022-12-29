@@ -16,9 +16,9 @@ disableAslrAndStart() {
       echo
       echo "Starting up the containers..."
       echo
-      sudo docker-compose up -d
+      docker-compose up -d
       echo
-      sudo docker ps -f name=hard_ret-to-libc
+      docker ps -f name=hard_ret-to-libc
    else
       echo
       echo "ASLR COULD NOT BE DISABLED."

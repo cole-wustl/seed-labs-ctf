@@ -1,14 +1,14 @@
 #!/bin/bash
 
-if [ -n "$(sudo docker ps -f name=easy_ret-to-libc -q)" ]
+if [ -n "$(docker ps -f name=easy_ret-to-libc -q)" ]
 then
    echo "STOPPING CONTAINERS..."
    echo
-   sudo docker stop $(sudo docker ps -f name=easy_ret-to-libc -q)
+   docker stop $(docker ps -f name=easy_ret-to-libc -q)
    echo 
 fi
 
-if [ -z "$(sudo docker ps --quiet --filter name=ret-to-libc)" ]
+if [ -z "$(docker ps --quiet --filter name=ret-to-libc)" ]
 then
    echo "ENABLING ASLR..."
    echo

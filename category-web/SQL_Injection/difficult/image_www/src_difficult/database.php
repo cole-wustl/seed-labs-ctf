@@ -9,7 +9,7 @@ function dbConnect()
    
    try
    {
-      $hostname = '10.9.0.3';
+      $hostname = '10.10.0.3';
       $username = 'seed';
       $password = 'dees';
       $database = 'ctf_sql';

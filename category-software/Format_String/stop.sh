@@ -31,17 +31,17 @@ stopContainers() {
       easy_server)
          echo
          echo "STOPPING CONTAINER 'easy_server'..."
-         sudo docker-compose down easy_server
+         docker-compose down easy_server
          ;;
       hard_server)
          echo
          echo "STOPPING CONTAINER 'hard_server'..."
-         sudo docker-compose down hard_server
+         docker-compose down hard_server
          ;;
       *)
          echo
          echo "STOPPING BOTH CONTAINERS..."
-         sudo docker-compose down
+         docker-compose down
          ;;
    esac
    return 0

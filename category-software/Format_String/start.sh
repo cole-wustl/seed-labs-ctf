@@ -28,17 +28,17 @@ startContainers() {
       easy_server)
          echo
          echo "STARTING CONTAINER 'easy_server'..."
-         sudo docker-compose up -d easy_server
+         docker-compose up -d easy_server
          ;;
       hard_server)
          echo
          echo "STARTING CONTAINER 'hard_server'..."
-         sudo docker-compose up -d hard_server
+         docker-compose up -d hard_server
          ;;
       *)
          echo
          echo "STARTING BOTH CONTAINERS..."
-         sudo docker-compose up -d
+         docker-compose up -d
          ;;
    esac
    return 0
