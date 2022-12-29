@@ -15,14 +15,14 @@ else
    HEALTH_STATUS=1
 fi
 
-# Check if HTML content can be fetched on port 80
-curl --silent --output /dev/null localhost:80
+# Check if HTML content can be fetched on port 3580
+curl --silent --output /dev/null localhost:3580
 
 if [ "$?" -eq 0 ];
 then
-   echo "Fetched HTML content on port 80." >> /ctf/health.log
+   echo "Fetched HTML content on port 3580." >> /ctf/health.log
 else
-   echo "Failed to fetch HTML content on port 80." >> /ctf/health.log
+   echo "Failed to fetch HTML content on port 3580." >> /ctf/health.log
    HEALTH_STATUS=1
 fi
 
